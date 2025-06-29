@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>光る星＋太陽と惑星の軌道（全8惑星）</title>
+  <style>
+    html, body {
+      margin: 0; padding: 0;
+      width: 100%; height: 100%;
+      background: #000;
+      overflow: hidden;
+      position: relative;
+    }
+    /* 星の背景 */
+    #star-container {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 0;
+    }
+    .star {
+      position: absolute;
+      background: #fff;
+      border-radius: 50%;
+      opacity: 0;
+    }
+    /* 太陽 */
+    #sun {
+      position: absolute;
+      top: 50%; left: 50%;
+      width: 120px; height: 120px;
+      margin: -60px 0 0 -60px;
+      background: radial-gradient(circle at center, #FFD54F 0%, #FFA000 70%);
+      border-radius: 50%;
+      box-shadow: 0 0 20px 5px rgba(255,213,79,0.6);
+      z-index: 9;
+    }
+    /* 軌道共通 */
+    .orbit {
+      position: absolute;
+      top: 50%; left: 50%;
+      border: 1px dashed rgba(255,255,255,0.3);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 1;
+    }
+    /* 惑星共通 */
+    .planet {
+      position: absolute;
+      top: 0; left: 50%;
+      transform: translateX(-50%);
+      border-radius: 50%;
+    }
+    /* 各軌道と惑星設定 */
+    #orbit-mercury { width:200px; height:200px; animation: rotate-mercury 6s linear infinite; }
+    #mercury      { width:8px;  height:8px;  background:#aaa;    }
+
+    #orbit-venus  { width:280px; height:280px; animation: rotate-venus 10s linear infinite; }
+    #venus        { width:14px; height:14px; background:#f5e1a4; }
+
+    #orbit-earth  { width:360px; height:360px; animation: rotate-earth 15s linear infinite; }
+    #earth        { width:16px; height:16px; background:#3D85C6; }
+
+    #orbit-mars   { width:440px; height:440px; animation: rotate-mars 20s linear infinite; }
+    #mars         { width:12px; height:12px; background:#D2691E; }
+
+    #orbit-jupiter{ width:520px; height:520px; animation: rotate-jupiter 30s linear infinite; }
+    #jupiter      { width:24px; height:24px; background:#d9a066; }
+
+    #orbit-saturn { width:600px; height:600px; animation: rotate-saturn 40s linear infinite; }
+    #saturn       { width:22px; height:22px; background:#f0e68c; }
+    #saturn .ring {
+      position: absolute;
+      top:50%; left:50%;
+      width:36px; height:8px;
+      margin:-4px 0 0 -18px;
+      border:2px solid rgba(200,180,150,0.8);
+      border-radius:50%;
+      transform: rotate(20deg);
+    }
+
+    #orbit-uranus { width:680px; height:680px; animation: rotate-uranus 50s linear infinite; }
+    #uranus       { width:20px; height:20px; background:#66ccff; }
+
+    #orbit-neptune{ width:760px; height:760px; animation: rotate-neptune 60s linear infinite; }
+    #neptune      { width:18px; height:18px; background:#3366cc; }
+
+    /* 回転アニメ */
+    @keyframes rotate-mercury  { from{transform:translate(-50%,-50%) rotate(0);} to{transform:translate(-50%,-50%) rotate(360deg);} }
+    @keyframes rotate-venus    { from{transform:translate(-50%,-50%) rotate(0);} to{transform:translate(-50%,-50%) rotate(360deg);} }
+    @keyframes rotate-earth    { from{transform:translate(-50%,-50%) rotate(0);} to{transform:translate(-50%,-50%) rotate(360deg);} }
+    @keyframes rotate-mars     { from{transform:translate(-50%,-50%) rotate(0);} to{transform:translate(-50%,-50%) rotate(360deg);} }
+    @keyframes rotate-jupiter  { from{transform:translate(-50%,-50%) rotate(0);} to{transform:translate(-50%,-50%) rotate(360deg);} }
+    @keyframes rotate-saturn   { from{transform:translate(-50%,-50%) rotate(0);} to{transform:translate(-50%,-50%) rotate(360deg);} }
+    @keyframes rotate-uranus   { from{transform:translate(-50%,-50%) rotate(0);} to{transform:translate(-50%,-50%) rotate(360deg);} }
+    @keyframes rotate-neptune  { from{transform:translate(-50%,-50%) rotate(0);} to{transform:translate(-50%,-50%) rotate(360deg);} }
+  </style>
+</head>
+<body>
+  <div id="star-container"></div>
+
+  <div id="sun"></div>
+  <div id="orbit-mercury"  class="orbit"><div id="mercury"  class="planet"></div></div>
+  <div id="orbit-venus"    class="orbit"><div id="venus"    class="planet"></div></div>
+  <div id="orbit-earth"    class="orbit"><div id="earth"    class="planet"></div></div>
+  <div id="orbit-mars"     class="orbit"><div id="mars"     class="planet"></div></div>
+  <div id="orbit-jupiter"  class="orbit"><div id="jupiter"  class="planet"></div></div>
+  <div id="orbit-saturn"   class="orbit">
+    <div id="saturn" class="planet"><div class="ring"></div></div>
+  </div>
+  <div id="orbit-uranus"   class="orbit"><div id="uranus"   class="planet"></div></div>
+  <div id="orbit-neptune"  class="orbit"><div id="neptune"  class="planet"></div></div>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    $(function(){
+      const $cont = $('#star-container');
+      const starCount = 100;
+      for(let i=0; i<starCount; i++){
+        const size = Math.random()*2 + 1;
+        $('<div class="star"></div>').css({
+          width: size+'px', height: size+'px',
+          top:  Math.random()*100+'%',
+          left: Math.random()*100+'%'
+        }).appendTo($cont).each(function(){
+          twinkle($(this));
+        });
+      }
+      function twinkle($s){
+        const inDur  = Math.random()*1500 + 500;
+        const outDur = Math.random()*1500 + 500;
+        $s.animate({opacity:1}, inDur)
+          .animate({opacity:0}, outDur, ()=> twinkle($s));
+      }
+    });
+  </script>
+</body>
+</html>
